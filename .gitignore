@@ -1,0 +1,14 @@
+# large / downloadable artefacts (see README for download steps)
+data/
+weights/
+outputs/sam_raw/
+outputs/*.avi
+outputs/*.mp4
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+outputs/*.log
+outputs/*.sh
+outputs/*.txt
+.venv/
+*.zip

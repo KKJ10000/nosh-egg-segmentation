@@ -1,0 +1,34 @@
+{
+ "trial": "T31",
+ "selected_by": "highest mean per-image IoU on the dev split among T29-T32 (dev only; eval never used for selection)",
+ "dev_metrics": {
+  "mean_iou": 0.5828,
+  "mean_dice": 0.634,
+  "mean_precision": 0.7091,
+  "mean_recall": 0.6393,
+  "mean_bf": 0.5527,
+  "inst_f1": 0.7568,
+  "count_mae": 0.3636
+ },
+ "segmenter": {
+  "feature": "whiteness_local",
+  "chroma_w": 1.5,
+  "thresh": "sweep",
+  "open_k": 7,
+  "close_k": 7,
+  "fill_holes": true,
+  "min_area": 0.004,
+  "max_area": 0.6,
+  "min_solidity": 0.9,
+  "min_ell_iou": 0.85,
+  "min_axis_ratio": 0.4,
+  "score": "shape_contrast",
+  "rel_keep": 0.85,
+  "ws_refine": true,
+  "edge_cands": true,
+  "wr_in": 0.35,
+  "wr_out": 0.7,
+  "watershed": true,
+  "ws_ratio": 0.6
+ }
+}
