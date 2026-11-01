@@ -72,6 +72,28 @@ def split_table():
             ["Dev / Eval", f"{len(sp['dev'])} / {len(sp['eval'])}"], ["Grouping params", json.dumps(sp["params"])]]
     return table(rows, [4, 12], font=8)
 
+BUL2 = ParagraphStyle("bul2", parent=BUL, leftIndent=26, bulletIndent=16)
+LIST_RE = re.compile(r"^(\s*)(-|\d+\.)\s+(.*)$")
+
+def list_or_para(b):
+    """A block is a paragraph, a list, or a lead-in line followed by a list. '- ' items, '  - ' nested items and
+    '1. ' numbered items each start a new entry; other lines continue the previous entry."""
+    items = []  # (kind, level, bullet, text)
+    for line in b.split("\n"):
+        m = LIST_RE.match(line)
+        if m:
+            lvl = 1 if len(m.group(1)) >= 2 else 0
+            items.append(("li", lvl, "•" if m.group(2) == "-" else m.group(2), m.group(3)))
+        elif items:
+            k, l, bu, t = items[-1]; items[-1] = (k, l, bu, t + " " + line.strip())
+        else:
+            items.append(("p", 0, None, line.strip()))
+    out = []
+    for k, l, bu, t in items:
+        if k == "p": out.append(Paragraph(inline(t), BODY))
+        else: out.append(Paragraph(inline(t), BUL2 if l else BUL, bulletText=bu))
+    return out
+
 def build():
     txt = open(os.path.join(ROOT, "report_text.md")).read()
     story = []
@@ -85,11 +107,7 @@ def build():
         if b == "[[table:split]]": story.append(split_table()); story.append(Spacer(1, 6)); continue
         if b.startswith("# "): story.append(Paragraph(inline(b[2:]), H1)); continue
         if b.startswith("## "): story.append(Paragraph(inline(b[3:]), H2)); continue
-        if b.startswith("- "):
-            for item in re.split(r"\n- ", b[2:]):
-                story.append(Paragraph(inline(item.replace("\n", " ")), BUL, bulletText="•"))
-            continue
-        story.append(Paragraph(inline(b.replace("\n", " ")), BODY))
+        story.extend(list_or_para(b))
     out = os.path.join(ROOT, "REPORT.pdf")
     def footer(c, d):
         c.setFont("Helvetica", 7); c.setFillColor(colors.grey)

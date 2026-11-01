@@ -11,7 +11,7 @@
 
 ## Data
 
-The dataset is the Roboflow "egg" v1 export from the assignment's zip: 110 JPEGs at 640x640, exported in *folder* (classification) format. The only labels are folder names (egg / Unlabeled), so there are **no boxes or masks**. The images are mostly one to three white eggs, photographed by phone on very varied backgrounds: sand and ash, steel bowls with water, pink plastic bowls, green leaves, keyboards, towels, egg trays, foil packets and hands. Many backgrounds are themselves white or bright, which is what makes classical segmentation hard here.
+The dataset is the Roboflow "egg" v1 export from the assignment's zip: 110 JPEGs at 640x640, exported in folder (classification) format. The only labels are folder names (egg / Unlabeled), so there are **no boxes or masks**. The images are mostly one to three white eggs, photographed by phone on very varied backgrounds: sand and ash, steel bowls with water, pink plastic bowls, green leaves, keyboards, towels, egg trays, foil packets and hands. Many backgrounds are themselves white or bright, which is what makes classical segmentation hard here.
 
 All work was done on a 2-core CPU with 7 GB of RAM and no GPU.
 
@@ -35,7 +35,7 @@ All work was done on a 2-core CPU with 7 GB of RAM and no GPU.
 
 **Result:** the filter kept 144 egg instances on the 110 images: 81 images with one egg, 10 with two, 13 with three, 1 with four, and 5 with no accepted egg (all 5 in dev). The eval split has 23 eggs in 22 images (21 single-egg images and one two-egg image); dev has 121 eggs in 88 images.
 
-[[fig:results/figures/sam_masks_montage_small.jpg|SAM ViT-B + egg filter on all 110 images (each colour is one instance). These masks are the pseudo ground truth for Tasks 2-3.|17.5]]
+[[fig:results/figures/sam_masks_montage_small.jpg|SAM ViT-B + egg filter on all 110 images (each colour is one instance). These masks are the pseudo ground truth for Tasks 2-3.|13.5]]
 
 ## Caveats about the pseudo-GT
 
@@ -43,7 +43,7 @@ The egg filter uses shape and brightness priors similar to the ones the classica
 - Eggs that are partly occluded (in a plastic bag, among leaves, under water) are sometimes missed by the filter or only partly masked.
 - In a few images the fallback picked the wrong region.
 
-These GT errors are counted against the classical method in Task 3 and are pointed out in the failure analysis where they occur. With more time I would prompt SAM with a single positive point at each egg (one click per egg) to get a clean GT.
+These GT errors are counted against the classical method in Task 3 and are pointed out in the failure analysis where they occur (none of the six worst eval images is a GT error). With more time I would prompt SAM with a single positive point at each egg (one click per egg) to get a clean GT.
 
 [[pagebreak]]
 
@@ -75,6 +75,8 @@ I visually checked all 22 eval pseudo-GT masks: every egg is correctly segmented
 - **Scoring and selection:** score = ellipse IoU x solidity x min(1, ring contrast / 40). Candidates scoring below 0.85x the best in the image are dropped, then a greedy non-maximum suppression (overlap 0.3) keeps the best non-overlapping candidates.
 - **Edge refinement:** each kept egg is snapped to the colour edge with a marker-controlled watershed: sure foreground is the candidate eroded by 0.35r, sure background is outside the candidate dilated by 0.7r (r = equivalent radius).
 - **Speed:** about 1.8 s per image on the 2-core CPU (2 worker processes).
+
+[[pagebreak]]
 
 ## Experiment log (dev split only, 88 images, SAM pseudo-GT)
 
@@ -115,6 +117,8 @@ The per-image results are strongly bimodal. 14 of 22 eval images reach IoU 0.52-
 [[fig:results/figures/count_error_hist.png|Instance count error (predicted - SAM) per image.|9]]
 
 [[fig:results/figures/iou_vs_size.png|IoU vs egg size.|9]]
+
+[[pagebreak]]
 
 ## Failure analysis
 

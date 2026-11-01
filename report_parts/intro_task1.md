@@ -8,7 +8,7 @@
 
 ## Data
 
-The dataset is the Roboflow "egg" v1 export from the assignment's zip: 110 JPEGs at 640x640, exported in *folder* (classification) format. The only labels are folder names (egg / Unlabeled), so there are **no boxes or masks**. The images are mostly one to three white eggs, photographed by phone on very varied backgrounds: sand and ash, steel bowls with water, pink plastic bowls, green leaves, keyboards, towels, egg trays, foil packets and hands. Many backgrounds are themselves white or bright, which is what makes classical segmentation hard here.
+The dataset is the Roboflow "egg" v1 export from the assignment's zip: 110 JPEGs at 640x640, exported in folder (classification) format. The only labels are folder names (egg / Unlabeled), so there are **no boxes or masks**. The images are mostly one to three white eggs, photographed by phone on very varied backgrounds: sand and ash, steel bowls with water, pink plastic bowls, green leaves, keyboards, towels, egg trays, foil packets and hands. Many backgrounds are themselves white or bright, which is what makes classical segmentation hard here.
 
 All work was done on a 2-core CPU with 7 GB of RAM and no GPU.
 
